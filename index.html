@@ -5,7 +5,7 @@
   <title>My AR Character</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- A-Frame & AR.js NFT (same style as your group's working code) -->
+  <!-- A-Frame & AR.js NFT (same style/version as group project) -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.4/aframe/build/aframe-ar-nft.js"></script>
 
@@ -31,7 +31,7 @@
   </style>
 </head>
 <body>
-  <div id="statusBox">Scan your marker to see the 3D character ✨</div>
+  <div id="statusBox">Scan the <b>alp</b> or <b>priza</b> marker ✨</div>
 
   <a-scene
     vr-mode-ui="enabled: false"
@@ -39,40 +39,60 @@
     renderer="logarithmicDepthBuffer: true;"
     arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
 
-    <!-- lights -->
-    <a-entity light="type: ambient; intensity: 0.9"></a-entity>
-    <a-entity light="type: directional; intensity: 0.8" position="0 1 1"></a-entity>
+    <!-- Lights -->
+    <a-entity light="type: ambient; intensity: 0.8"></a-entity>
+    <a-entity light="type: directional; intensity: 0.6" position="0 1 1"></a-entity>
 
-    <!-- NFT marker: uses priza.fset / priza.fset3 / priza.iset in project root -->
-    <a-nft id="marker-main" type="nft" url="priza">
-      <!-- 3D character model -->
-      <a-entity id="model-main"
+    <!-- Marker 1: alp (uses alp.fset / alp.fset3 / alp.iset) -->
+    <a-nft id="marker-alp" type="nft" url="alp">
+      <a-entity id="model-alp"
                 gltf-model="lowpoly_trump_free_character/scene.gltf"
                 scale="2.5 2.5 2.5"
                 position="0 0 0"
                 rotation="90 180 0"
-                visible="false">
-      </a-entity>
+                visible="false"></a-entity>
+    </a-nft>
+
+    <!-- Marker 2: priza (uses priza.fset / priza.fset3 / priza.iset) -->
+    <a-nft id="marker-priza" type="nft" url="priza">
+      <a-entity id="model-priza"
+                gltf-model="lowpoly_trump_free_character/scene.gltf"
+                scale="2.5 2.5 2.5"
+                position="0 0 0"
+                rotation="90 180 0"
+                visible="false"></a-entity>
     </a-nft>
 
     <a-entity camera></a-entity>
   </a-scene>
 
   <script>
-    const statusBox  = document.getElementById('statusBox');
-    const markerMain = document.getElementById('marker-main');
-    const modelMain  = document.getElementById('model-main');
+    const statusBox   = document.getElementById('statusBox');
 
-    // When marker is detected
-    markerMain.addEventListener('markerFound', () => {
-      modelMain.setAttribute('visible', 'true');
-      statusBox.innerHTML = '✅ Marker scanned! Your 3D character is visible.';
+    const markerAlp   = document.getElementById('marker-alp');
+    const markerPriza = document.getElementById('marker-priza');
+
+    const modelAlp    = document.getElementById('model-alp');
+    const modelPriza  = document.getElementById('model-priza');
+
+    // --- alp marker ---
+    markerAlp.addEventListener('markerFound', () => {
+      modelAlp.setAttribute('visible', 'true');
+      statusBox.innerHTML = '✅ alp marker scanned – 3D character visible.';
+    });
+    markerAlp.addEventListener('markerLost', () => {
+      modelAlp.setAttribute('visible', 'false');
+      statusBox.innerHTML = 'Scan the alp or priza marker ✨';
     });
 
-    // When marker is lost
-    markerMain.addEventListener('markerLost', () => {
-      modelMain.setAttribute('visible', 'false');
-      statusBox.innerHTML = 'Scan your marker to see the 3D character ✨';
+    // --- priza marker ---
+    markerPriza.addEventListener('markerFound', () => {
+      modelPriza.setAttribute('visible', 'true');
+      statusBox.innerHTML = '✅ priza marker scanned – 3D character visible.';
+    });
+    markerPriza.addEventListener('markerLost', () => {
+      modelPriza.setAttribute('visible', 'false');
+      statusBox.innerHTML = 'Scan the alp or priza marker ✨';
     });
   </script>
 </body>
