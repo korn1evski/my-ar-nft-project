@@ -27,6 +27,7 @@
       font-family: sans-serif;
       font-size: 14px;
       z-index: 5;
+      max-width: 90vw;
     }
   </style>
 </head>
@@ -94,6 +95,21 @@
 
     let usaScanned = false;
     let ruScanned  = false;
+
+    // ---- Debug: see if models actually load or error ----
+    function attachModelDebug(el, name) {
+      el.addEventListener('model-loaded', () => {
+        console.log(name + ' model-loaded');
+        statusBox.innerHTML = 'ℹ️ ' + name + ' model loaded OK. Now scan flags in order: USA → Russia → Ukraine.';
+      });
+      el.addEventListener('model-error', (e) => {
+        console.error(name + ' model-error', e.detail);
+        statusBox.innerHTML = '❌ Error loading ' + name + ' model glb. Check file name/path.';
+      });
+    }
+    attachModelDebug(modelUSA, 'USA/Trump');
+    attachModelDebug(modelRU,  'Russia/Putin');
+    attachModelDebug(modelUA,  'Ukraine/Zelensky');
 
     // ---------- USA marker (must be first) ----------
     markerUSA.addEventListener('markerFound', () => {
