@@ -48,7 +48,7 @@
         position="0 1 1"
       ></a-entity>
 
-      <!-- USA marker -> Trump -->
+      <!-- USA marker -> Trump (FIRST) -->
       <a-nft id="marker-usa" type="nft" url="usa">
         <a-entity
           id="model-usa"
@@ -57,34 +57,31 @@
           position="0 0 0"
           rotation="270 0 0"
           visible="false"
-        >
-        </a-entity>
+        ></a-entity>
       </a-nft>
 
-      <!-- Russia marker -> Putin -->
+      <!-- Russia marker -> Putin (SECOND) -->
       <a-nft id="marker-ru" type="nft" url="ru">
         <a-entity
           id="model-ru"
           gltf-model="putin.glb"
-          scale="35 35 35"
+          scale="55 55 55"
           position="0 0 0"
           rotation="270 0 0"
           visible="false"
-        >
-        </a-entity>
+        ></a-entity>
       </a-nft>
 
-      <!-- Ukraine marker -> Zelensky -->
+      <!-- Ukraine marker -> Zelensky (THIRD) -->
       <a-nft id="marker-ua" type="nft" url="ua">
         <a-entity
           id="model-ua"
           gltf-model="zelensky.glb"
-          scale="15 15 15"
+          scale="55 55 55"
           position="0 0 0"
           rotation="270 0 0"
           visible="false"
-        >
-        </a-entity>
+        ></a-entity>
       </a-nft>
 
       <a-entity camera></a-entity>
@@ -103,25 +100,6 @@
 
       let usaScanned = false;
       let ruScanned = false;
-
-      // ---- Debug: see if models actually load or error ----
-      function attachModelDebug(el, name) {
-        el.addEventListener("model-loaded", () => {
-          console.log(name + " model-loaded");
-          statusBox.innerHTML =
-            "ℹ️ " +
-            name +
-            " model loaded OK. Now scan flags in order: USA → Russia → Ukraine.";
-        });
-        el.addEventListener("model-error", (e) => {
-          console.error(name + " model-error", e.detail);
-          statusBox.innerHTML =
-            "❌ Error loading " + name + " model glb. Check file name/path.";
-        });
-      }
-      attachModelDebug(modelUSA, "USA/Trump");
-      attachModelDebug(modelRU, "Russia/Putin");
-      attachModelDebug(modelUA, "Ukraine/Zelensky");
 
       // ---------- USA marker (must be first) ----------
       markerUSA.addEventListener("markerFound", () => {
@@ -174,9 +152,8 @@
         statusBox.innerHTML = "🎉 All flags scanned in order! 🇺🇸 → 🇷🇺 → 🇺🇦";
       });
 
-      markerUA.addEventListener("markerLost", () => {
-        modelUA.setAttribute("visible", "false");
-      });
+      // Note: no markerUA "markerLost" handler, so we don't manually hide Zelensky here.
+      // AR.js will still stop rendering if the marker is completely lost, but we won't force it off.
     </script>
   </body>
 </html>
