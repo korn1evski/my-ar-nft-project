@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>AR Interaction Lab (No Super-Hands)</title>
+    <title>AR Interaction Lab – NFT Marker</title>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, user-scalable=no"
@@ -10,7 +10,7 @@
 
     <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <!-- AR.js for A-Frame (marker-based AR) -->
+    <!-- AR.js for A-Frame (NFT marker-based AR) -->
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
 
     <style>
@@ -74,7 +74,6 @@
       });
 
       // ---------- 2) Drag on a plane (marker plane) ----------
-      // Drag with mouse/touch by intersecting an invisible plane and moving the entity to that point.
       AFRAME.registerComponent("drag-on-plane", {
         schema: {
           plane: { type: "selector" },
@@ -84,14 +83,12 @@
         init() {
           this.dragging = false;
           this.scene = this.el.sceneEl;
-          this.rayEl = document.querySelector("#ray"); // scene cursor ray
-          // listen on element
+          this.rayEl = document.querySelector("#ray");
           this.el.addEventListener("mousedown", () => (this.dragging = true));
           window.addEventListener("mouseup", () => (this.dragging = false));
           window.addEventListener("touchend", () => (this.dragging = false));
-          // move
-          this.scene.addEventListener("mousemove", (e) => this.updateDrag());
-          this.scene.addEventListener("touchmove", (e) => this.updateDrag());
+          this.scene.addEventListener("mousemove", () => this.updateDrag());
+          this.scene.addEventListener("touchmove", () => this.updateDrag());
         },
         updateDrag() {
           if (!this.dragging) return;
@@ -101,7 +98,6 @@
           const planeMesh = this.data.plane.getObject3D("mesh");
           if (!planeMesh) return;
 
-          // Build a THREE.Plane from the plane entity (its world transform).
           planeMesh.updateMatrixWorld();
           const normal = new THREE.Vector3(0, 1, 0).applyQuaternion(
             planeMesh.getWorldQuaternion(new THREE.Quaternion())
@@ -112,10 +108,9 @@
             point
           );
 
-          const ray = raycaster.ray; // world-space ray from cursor
+          const ray = raycaster.ray;
           const hit = new THREE.Vector3();
           if (ray.intersectPlane(plane, hit)) {
-            // constrain to radius on XZ around marker center
             const local = this.el.parentEl.object3D.worldToLocal(hit.clone());
             const r = Math.hypot(local.x, local.z);
             const maxR = this.data.radius;
@@ -175,7 +170,7 @@
 
       // ---------- 4) Twist to rotate (two-finger) ----------
       AFRAME.registerComponent("twist-rotate", {
-        schema: { degPerRad: { default: 57.2958 } }, // 180/π
+        schema: { degPerRad: { default: 57.2958 } },
         init() {
           this.active = false;
           this.startA = 0;
@@ -253,9 +248,9 @@
       embedded
       renderer="colorManagement: true; physicallyCorrectLights: true"
       xr-mode-ui="enabled: false"
-      arjs="sourceType: webcam; detectionMode: mono; debugUIEnabled: false"
+      arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false"
     >
-      <!-- Cursor ray for mouse/touch (A-Frame builds a raycaster object3D for us) -->
+      <!-- Cursor ray for mouse/touch -->
       <a-entity
         id="ray"
         cursor="rayOrigin: mouse"
@@ -269,8 +264,16 @@
         position="0 1 1"
       ></a-entity>
 
-      <!-- Marker -->
-      <a-marker preset="hiro" id="marker">
+      <!-- NFT Marker using priza.* files in project root -->
+      <a-nft
+        id="marker"
+        type="nft"
+        url="priza"
+        smooth="true"
+        smoothCount="10"
+        smoothTolerance="0.01"
+        smoothThreshold="5"
+      >
         <!-- Invisible drag plane anchored to marker -->
         <a-plane
           id="dragplane"
@@ -282,7 +285,7 @@
           material="color: #000; opacity: 0; transparent: true"
         ></a-plane>
 
-        <!-- Interactive object -->
+        <!-- Interactive cube -->
         <a-box
           id="cube"
           class="raytarget"
@@ -299,6 +302,7 @@
         >
         </a-box>
 
+        <!-- Text that appears when the marker is tracked -->
         <a-text
           value="Hello AR!"
           color="#FFFFFF"
@@ -311,7 +315,7 @@
 
         <!-- Marker center dot (optional) -->
         <a-cylinder radius="0.01" height="0.001" color="#888"></a-cylinder>
-      </a-marker>
+      </a-nft>
 
       <a-entity camera></a-entity>
     </a-scene>
@@ -320,7 +324,7 @@
       const hud = document.getElementById("hud");
       const cube = document.getElementById("cube");
 
-      // Buttons
+      // Rotate buttons
       document
         .getElementById("btn-rot-l")
         .addEventListener("click", () => nudgeRot(-15));
@@ -332,6 +336,7 @@
         cube.setAttribute("rotation", { x: r.x, y: r.y + delta, z: r.z });
       }
 
+      // Scale buttons
       document
         .getElementById("btn-scale--")
         .addEventListener("click", () => nudgeScale(0.9));
@@ -347,14 +352,15 @@
         });
       }
 
+      // Color button
       document
         .getElementById("btn-color")
         .addEventListener("click", () => cube.emit("random-color"));
 
       // Gesture hooks
-      cube.addEventListener("tap", () => cube.emit("toggle-spin")); // single tap: spin on/off
-      cube.addEventListener("doubletap", () => cube.emit("random-color")); // double tap: recolor
-      cube.addEventListener("longpress", () => hud.classList.toggle("hidden")); // long press: show/hide HUD
+      cube.addEventListener("tap", () => cube.emit("toggle-spin"));
+      cube.addEventListener("doubletap", () => cube.emit("random-color"));
+      cube.addEventListener("longpress", () => hud.classList.toggle("hidden"));
     </script>
   </body>
 </html>
