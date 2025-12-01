@@ -5,7 +5,7 @@
   <title>My AR Character</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- A-Frame & AR.js NFT -->
+  <!-- A-Frame & AR.js NFT (same style as your group project) -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.4/aframe/build/aframe-ar-nft.js"></script>
 
@@ -39,26 +39,19 @@
     renderer="logarithmicDepthBuffer: true;"
     arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
 
-    <!-- Preload assets (this helps with textures) -->
-    <a-assets>
-      <!-- GLTF with embedded bin + textures folder -->
-      <a-asset-item id="char-gltf" src="lowpoly_trump_free_character/scene.gltf"></a-asset-item>
-    </a-assets>
-
-    <!-- Lights -->
+    <!-- lights -->
     <a-entity light="type: ambient; intensity: 0.9"></a-entity>
     <a-entity light="type: directional; intensity: 0.8" position="0 1 1"></a-entity>
 
-    <!-- Your NFT marker: use base name that matches your .fset/.iset files (alp or priza) -->
+    <!-- NFT marker: CHANGE 'alp' -> 'priza' if you use priza.* marker files -->
     <a-nft id="marker-main" type="nft" url="alp">
-      <!-- 3D character model -->
-      <a-entity
-        id="model-main"
-        gltf-model="#char-gltf"
-        scale="2.5 2.5 2.5"
-        position="0 0 0"
-        rotation="90 180 0"
-        visible="false">
+      <!-- your 3D character model -->
+      <a-entity id="model-main"
+                gltf-model="lowpoly_trump_free_character/scene.gltf"
+                scale="2.5 2.5 2.5"
+                position="0 0 0"
+                rotation="90 180 0"
+                visible="false">
       </a-entity>
     </a-nft>
 
@@ -66,15 +59,17 @@
   </a-scene>
 
   <script>
-    const statusBox = document.getElementById('statusBox');
-    const markerMain = document.getElementById('marker-main');
-    const modelMain  = document.getElementById('model-main');
+    const statusBox   = document.getElementById('statusBox');
+    const markerMain  = document.getElementById('marker-main');
+    const modelMain   = document.getElementById('model-main');
 
+    // When marker is detected
     markerMain.addEventListener('markerFound', () => {
       modelMain.setAttribute('visible', 'true');
       statusBox.innerHTML = '✅ Marker scanned! Your 3D character is visible.';
     });
 
+    // When marker is lost
     markerMain.addEventListener('markerLost', () => {
       modelMain.setAttribute('visible', 'false');
       statusBox.innerHTML = 'Scan your marker to see the 3D character ✨';
