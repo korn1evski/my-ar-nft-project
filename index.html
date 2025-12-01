@@ -203,7 +203,7 @@
         },
       });
 
-      // ---------- 5) Spin toggler + random color (hooked to taps) ----------
+      // ---------- 5) Spin toggler + random color ----------
       AFRAME.registerComponent("spin-toggle", {
         schema: { speed: { default: 4000 } },
         init() {
@@ -250,7 +250,7 @@
       xr-mode-ui="enabled: false"
       arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false"
     >
-      <!-- Cursor ray for mouse/touch -->
+      <!-- Cursor ray -->
       <a-entity
         id="ray"
         cursor="rayOrigin: mouse"
@@ -274,7 +274,7 @@
         smoothTolerance="0.01"
         smoothThreshold="5"
       >
-        <!-- Invisible drag plane anchored to marker -->
+        <!-- Invisible drag plane -->
         <a-plane
           id="dragplane"
           class="raytarget"
@@ -285,7 +285,7 @@
           material="color: #000; opacity: 0; transparent: true"
         ></a-plane>
 
-        <!-- Interactive cube -->
+        <!-- Cube -->
         <a-box
           id="cube"
           class="raytarget"
@@ -299,19 +299,24 @@
           drag-on-plane="plane: #dragplane; yOffset: 0.25; radius: 0.6"
           pinch-scale
           twist-rotate
-        >
-        </a-box>
+        ></a-box>
 
-        <!-- Text that appears when the marker is tracked -->
-        <a-text
-          value="Hello AR!"
-          color="#FFFFFF"
-          align="center"
-          position="0 0.8 0"
-          rotation="-90 0 0"
-          width="3"
-        >
-        </a-text>
+        <!-- Text panel ABOVE the cube, vertical, very visible -->
+        <a-entity position="0 0.9 0">
+          <a-plane
+            width="1.8"
+            height="0.5"
+            color="#000000"
+            opacity="0.7"
+          ></a-plane>
+          <a-text
+            value="Hello AR!"
+            color="#FFFFFF"
+            align="center"
+            position="0 0 0.01"
+            width="2"
+          ></a-text>
+        </a-entity>
 
         <!-- Marker center dot (optional) -->
         <a-cylinder radius="0.01" height="0.001" color="#888"></a-cylinder>
@@ -357,7 +362,7 @@
         .getElementById("btn-color")
         .addEventListener("click", () => cube.emit("random-color"));
 
-      // Gesture hooks
+      // Gesture hooks on cube
       cube.addEventListener("tap", () => cube.emit("toggle-spin"));
       cube.addEventListener("doubletap", () => cube.emit("random-color"));
       cube.addEventListener("longpress", () => hud.classList.toggle("hidden"));
