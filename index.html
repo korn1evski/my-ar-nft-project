@@ -60,7 +60,7 @@
         ></a-entity>
       </a-nft>
 
-      <!-- Russia marker -> Putin (SECOND) -->
+      <!-- Russia marker -> Putin (SECOND OPTION) -->
       <a-nft id="marker-ru" type="nft" url="ru">
         <a-entity
           id="model-ru"
@@ -72,7 +72,19 @@
         ></a-entity>
       </a-nft>
 
-      <!-- Ukraine marker -> Zelensky (THIRD) -->
+      <!-- France marker -> Macron (SECOND OPTION) -->
+      <a-nft id="marker-fr" type="nft" url="france">
+        <a-entity
+          id="model-fr"
+          gltf-model="macrone.glb"
+          scale="55 55 55"
+          position="75 0 0"
+          rotation="270 0 0"
+          visible="false"
+        ></a-entity>
+      </a-nft>
+
+      <!-- Ukraine marker -> Zelensky (THIRD, after USA + RU/FR) -->
       <a-nft id="marker-ua" type="nft" url="ua">
         <a-entity
           id="model-ua"
@@ -92,21 +104,25 @@
 
       const markerUSA = document.getElementById("marker-usa");
       const markerRU = document.getElementById("marker-ru");
+      const markerFR = document.getElementById("marker-fr");
       const markerUA = document.getElementById("marker-ua");
 
       const modelUSA = document.getElementById("model-usa");
       const modelRU = document.getElementById("model-ru");
+      const modelFR = document.getElementById("model-fr");
       const modelUA = document.getElementById("model-ua");
 
       let usaScanned = false;
-      let ruScanned = false;
+      // becomes true after either Russia OR France is scanned
+      let midScanned = false;
 
       // ---------- USA marker (must be first) ----------
       markerUSA.addEventListener("markerFound", () => {
         modelUSA.setAttribute("visible", "true");
         if (!usaScanned) {
           usaScanned = true;
-          statusBox.innerHTML = "✅ USA scanned! Now scan the Russia flag 🇷🇺";
+          statusBox.innerHTML =
+            "✅ USA scanned! Now scan the Russia 🇷🇺 or France 🇫🇷 flag";
         }
       });
 
@@ -114,7 +130,7 @@
         modelUSA.setAttribute("visible", "false");
       });
 
-      // ---------- Russia marker (second) ----------
+      // ---------- Russia marker (second option) ----------
       markerRU.addEventListener("markerFound", () => {
         if (!usaScanned) {
           modelRU.setAttribute("visible", "false");
@@ -123,8 +139,8 @@
         }
 
         modelRU.setAttribute("visible", "true");
-        if (!ruScanned) {
-          ruScanned = true;
+        if (!midScanned) {
+          midScanned = true;
           statusBox.innerHTML =
             "✅ Russia scanned! Now scan the Ukraine flag 🇺🇦";
         }
@@ -134,6 +150,26 @@
         modelRU.setAttribute("visible", "false");
       });
 
+      // ---------- France marker (second option) ----------
+      markerFR.addEventListener("markerFound", () => {
+        if (!usaScanned) {
+          modelFR.setAttribute("visible", "false");
+          statusBox.innerHTML = "⚠️ Scan the USA flag first 🇺🇸";
+          return;
+        }
+
+        modelFR.setAttribute("visible", "true");
+        if (!midScanned) {
+          midScanned = true;
+          statusBox.innerHTML =
+            "✅ France scanned! Now scan the Ukraine flag 🇺🇦";
+        }
+      });
+
+      markerFR.addEventListener("markerLost", () => {
+        modelFR.setAttribute("visible", "false");
+      });
+
       // ---------- Ukraine marker (last) ----------
       markerUA.addEventListener("markerFound", () => {
         if (!usaScanned) {
@@ -141,19 +177,20 @@
           statusBox.innerHTML = "⚠️ Scan the USA flag first 🇺🇸";
           return;
         }
-        if (!ruScanned) {
+        if (!midScanned) {
           modelUA.setAttribute("visible", "false");
           statusBox.innerHTML =
-            "⚠️ After USA, scan the Russia flag 🇷🇺, then Ukraine 🇺🇦";
+            "⚠️ After USA, scan either the Russia 🇷🇺 or France 🇫🇷 flag, then Ukraine 🇺🇦";
           return;
         }
 
         modelUA.setAttribute("visible", "true");
-        statusBox.innerHTML = "🎉 All flags scanned in order! 🇺🇸 → 🇷🇺 → 🇺🇦";
+        statusBox.innerHTML =
+          "🎉 All flags scanned in order! 🇺🇸 → (🇷🇺 or 🇫🇷) → 🇺🇦";
       });
 
-      // Note: no markerUA "markerLost" handler, so we don't manually hide Zelensky here.
-      // AR.js will still stop rendering if the marker is completely lost, but we won't force it off.
+      // We intentionally do NOT add markerUA "markerLost" so Zelensky isn't force-hidden by us.
+      // AR.js will stop rendering if the marker is totally lost.
     </script>
   </body>
 </html>
