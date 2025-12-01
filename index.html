@@ -1,168 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>World Leaders AR</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>World Leaders AR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- A-Frame & AR.js NFT -->
-  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.4/aframe/build/aframe-ar-nft.js"></script>
+    <!-- A-Frame & AR.js NFT -->
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.4/aframe/build/aframe-ar-nft.js"></script>
 
-  <style>
-    body, html {
-      margin: 0;
-      overflow: hidden;
-      width: 100%;
-      height: 100%;
-    }
-    #statusBox {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-family: sans-serif;
-      font-size: 14px;
-      z-index: 5;
-      max-width: 90vw;
-    }
-  </style>
-</head>
-<body>
-  <div id="statusBox">
-    Scan the <b>USA</b> flag first 🇺🇸
-  </div>
+    <style>
+      body,
+      html {
+        margin: 0;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+      }
+      #statusBox {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-family: sans-serif;
+        font-size: 14px;
+        z-index: 5;
+        max-width: 90vw;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="statusBox">Scan the <b>USA</b> flag first 🇺🇸</div>
 
-  <a-scene
-    vr-mode-ui="enabled: false"
-    embedded
-    renderer="logarithmicDepthBuffer: true;"
-    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
+    <a-scene
+      vr-mode-ui="enabled: false"
+      embedded
+      renderer="logarithmicDepthBuffer: true;"
+      arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+    >
+      <!-- Lights -->
+      <a-entity light="type: ambient; intensity: 0.9"></a-entity>
+      <a-entity
+        light="type: directional; intensity: 0.8"
+        position="0 1 1"
+      ></a-entity>
 
-    <!-- Lights -->
-    <a-entity light="type: ambient; intensity: 0.9"></a-entity>
-    <a-entity light="type: directional; intensity: 0.8" position="0 1 1"></a-entity>
+      <!-- USA marker -> Trump -->
+      <a-nft id="marker-usa" type="nft" url="usa">
+        <a-entity
+          id="model-usa"
+          gltf-model="trump.glb"
+          scale="1 1 1"
+          position="0 0 0"
+          rotation="90 0 0"
+          visible="false"
+        >
+        </a-entity>
+      </a-nft>
 
-    <!-- USA marker -> Trump -->
-    <a-nft id="marker-usa" type="nft" url="usa">
-      <a-entity id="model-usa"
-                gltf-model="trump.glb"
-                scale="1 1 1"
-                position="0 0 0"
-                rotation="90 0 0"
-                visible="false">
-      </a-entity>
-    </a-nft>
+      <!-- Russia marker -> Putin -->
+      <a-nft id="marker-ru" type="nft" url="ru">
+        <a-entity
+          id="model-usa"
+          gltf-model="trump.glb"
+          scale="4 4 4"
+          position="0 0 0"
+          rotation="0 180 0"
+          visible="false"
+        >
+        </a-entity>
+      </a-nft>
 
-    <!-- Russia marker -> Putin -->
-    <a-nft id="marker-ru" type="nft" url="ru">
-      <a-entity id="model-ru"
-                gltf-model="putin.glb"
-                scale="1 1 1"
-                position="0 0 0"
-                rotation="90 0 0"
-                visible="false">
-      </a-entity>
-    </a-nft>
+      <!-- Ukraine marker -> Zelensky -->
+      <a-nft id="marker-ua" type="nft" url="ua">
+        <a-entity
+          id="model-ua"
+          gltf-model="zelensky.glb"
+          scale="4 4 4"
+          position="0 0 0"
+          rotation="0 180 0"
+          visible="false"
+        >
+        </a-entity>
+      </a-nft>
 
-    <!-- Ukraine marker -> Zelensky -->
-    <a-nft id="marker-ua" type="nft" url="ua">
-      <a-entity id="model-ua"
-                gltf-model="zelensky.glb"
-                scale="1 1 1"
-                position="0 0 0"
-                rotation="90 0 0"
-                visible="false">
-      </a-entity>
-    </a-nft>
+      <a-entity camera></a-entity>
+    </a-scene>
 
-    <a-entity camera></a-entity>
-  </a-scene>
+    <script>
+      const statusBox = document.getElementById("statusBox");
 
-  <script>
-    const statusBox = document.getElementById('statusBox');
+      const markerUSA = document.getElementById("marker-usa");
+      const markerRU = document.getElementById("marker-ru");
+      const markerUA = document.getElementById("marker-ua");
 
-    const markerUSA = document.getElementById('marker-usa');
-    const markerRU  = document.getElementById('marker-ru');
-    const markerUA  = document.getElementById('marker-ua');
+      const modelUSA = document.getElementById("model-usa");
+      const modelRU = document.getElementById("model-ru");
+      const modelUA = document.getElementById("model-ua");
 
-    const modelUSA = document.getElementById('model-usa');
-    const modelRU  = document.getElementById('model-ru');
-    const modelUA  = document.getElementById('model-ua');
+      let usaScanned = false;
+      let ruScanned = false;
 
-    let usaScanned = false;
-    let ruScanned  = false;
+      // ---- Debug: see if models actually load or error ----
+      function attachModelDebug(el, name) {
+        el.addEventListener("model-loaded", () => {
+          console.log(name + " model-loaded");
+          statusBox.innerHTML =
+            "ℹ️ " +
+            name +
+            " model loaded OK. Now scan flags in order: USA → Russia → Ukraine.";
+        });
+        el.addEventListener("model-error", (e) => {
+          console.error(name + " model-error", e.detail);
+          statusBox.innerHTML =
+            "❌ Error loading " + name + " model glb. Check file name/path.";
+        });
+      }
+      attachModelDebug(modelUSA, "USA/Trump");
+      attachModelDebug(modelRU, "Russia/Putin");
+      attachModelDebug(modelUA, "Ukraine/Zelensky");
 
-    // ---- Debug: see if models actually load or error ----
-    function attachModelDebug(el, name) {
-      el.addEventListener('model-loaded', () => {
-        console.log(name + ' model-loaded');
-        statusBox.innerHTML = 'ℹ️ ' + name + ' model loaded OK. Now scan flags in order: USA → Russia → Ukraine.';
+      // ---------- USA marker (must be first) ----------
+      markerUSA.addEventListener("markerFound", () => {
+        modelUSA.setAttribute("visible", "true");
+        if (!usaScanned) {
+          usaScanned = true;
+          statusBox.innerHTML = "✅ USA scanned! Now scan the Russia flag 🇷🇺";
+        }
       });
-      el.addEventListener('model-error', (e) => {
-        console.error(name + ' model-error', e.detail);
-        statusBox.innerHTML = '❌ Error loading ' + name + ' model glb. Check file name/path.';
+
+      markerUSA.addEventListener("markerLost", () => {
+        modelUSA.setAttribute("visible", "false");
       });
-    }
-    attachModelDebug(modelUSA, 'USA/Trump');
-    attachModelDebug(modelRU,  'Russia/Putin');
-    attachModelDebug(modelUA,  'Ukraine/Zelensky');
 
-    // ---------- USA marker (must be first) ----------
-    markerUSA.addEventListener('markerFound', () => {
-      modelUSA.setAttribute('visible', 'true');
-      if (!usaScanned) {
-        usaScanned = true;
-        statusBox.innerHTML = '✅ USA scanned! Now scan the Russia flag 🇷🇺';
-      }
-    });
+      // ---------- Russia marker (second) ----------
+      markerRU.addEventListener("markerFound", () => {
+        if (!usaScanned) {
+          modelRU.setAttribute("visible", "false");
+          statusBox.innerHTML = "⚠️ Scan the USA flag first 🇺🇸";
+          return;
+        }
 
-    markerUSA.addEventListener('markerLost', () => {
-      modelUSA.setAttribute('visible', 'false');
-    });
+        modelRU.setAttribute("visible", "true");
+        if (!ruScanned) {
+          ruScanned = true;
+          statusBox.innerHTML =
+            "✅ Russia scanned! Now scan the Ukraine flag 🇺🇦";
+        }
+      });
 
-    // ---------- Russia marker (second) ----------
-    markerRU.addEventListener('markerFound', () => {
-      if (!usaScanned) {
-        modelRU.setAttribute('visible', 'false');
-        statusBox.innerHTML = '⚠️ Scan the USA flag first 🇺🇸';
-        return;
-      }
+      markerRU.addEventListener("markerLost", () => {
+        modelRU.setAttribute("visible", "false");
+      });
 
-      modelRU.setAttribute('visible', 'true');
-      if (!ruScanned) {
-        ruScanned = true;
-        statusBox.innerHTML = '✅ Russia scanned! Now scan the Ukraine flag 🇺🇦';
-      }
-    });
+      // ---------- Ukraine marker (last) ----------
+      markerUA.addEventListener("markerFound", () => {
+        if (!usaScanned) {
+          modelUA.setAttribute("visible", "false");
+          statusBox.innerHTML = "⚠️ Scan the USA flag first 🇺🇸";
+          return;
+        }
+        if (!ruScanned) {
+          modelUA.setAttribute("visible", "false");
+          statusBox.innerHTML =
+            "⚠️ After USA, scan the Russia flag 🇷🇺, then Ukraine 🇺🇦";
+          return;
+        }
 
-    markerRU.addEventListener('markerLost', () => {
-      modelRU.setAttribute('visible', 'false');
-    });
+        modelUA.setAttribute("visible", "true");
+        statusBox.innerHTML = "🎉 All flags scanned in order! 🇺🇸 → 🇷🇺 → 🇺🇦";
+      });
 
-    // ---------- Ukraine marker (last) ----------
-    markerUA.addEventListener('markerFound', () => {
-      if (!usaScanned) {
-        modelUA.setAttribute('visible', 'false');
-        statusBox.innerHTML = '⚠️ Scan the USA flag first 🇺🇸';
-        return;
-      }
-      if (!ruScanned) {
-        modelUA.setAttribute('visible', 'false');
-        statusBox.innerHTML = '⚠️ After USA, scan the Russia flag 🇷🇺, then Ukraine 🇺🇦';
-        return;
-      }
-
-      modelUA.setAttribute('visible', 'true');
-      statusBox.innerHTML = '🎉 All flags scanned in order! 🇺🇸 → 🇷🇺 → 🇺🇦';
-    });
-
-    markerUA.addEventListener('markerLost', () => {
-      modelUA.setAttribute('visible', 'false');
-    });
-  </script>
-</body>
+      markerUA.addEventListener("markerLost", () => {
+        modelUA.setAttribute("visible", "false");
+      });
+    </script>
+  </body>
 </html>
