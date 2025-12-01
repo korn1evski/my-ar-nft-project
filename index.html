@@ -1,79 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>My AR Character</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- A-Frame & AR.js NFT (same version/style as your group project) -->
-  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.4/aframe/build/aframe-ar-nft.js"></script>
-  
-  <style>
-    body, html {
-      margin: 0;
-      overflow: hidden;
-      width: 100%;
-      height: 100%;
-    }
-    #statusBox {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-family: sans-serif;
-      font-size: 14px;
-      z-index: 5;
-    }
-  </style>
-</head>
-<body>
-  <div id="statusBox">Scan the <b>priza</b> marker to see the character ✨</div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Quentin Tarantino AR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <a-scene
-    vr-mode-ui="enabled: false"
-    embedded
-    renderer="logarithmicDepthBuffer: true;"
-    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
-    
-    <!-- Lights -->
-    <a-entity light="type: ambient; intensity: 0.9"></a-entity>
-    <a-entity light="type: directional; intensity: 0.8" position="0 1 1"></a-entity>
+    <!-- A-Frame & AR.js NFT -->
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.4/aframe/build/aframe-ar-nft.js"></script>
 
-    <!-- Single NFT marker: uses priza.fset / priza.fset3 / priza.iset -->
-    <a-nft id="marker-priza" type="nft" url="priza">
-      <!-- 3D model: GLB with embedded textures -->
-      <a-entity id="model-priza"
-                gltf-model="lowpoly_trump_free_character.glb"
-                scale="3 3 3"
-                position="0 0 0"
-                rotation="90 0 0"
-                visible="false">
-      </a-entity>
-    </a-nft>
+    <style>
+      body,
+      html {
+        margin: 0;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+      }
+      #statusBox {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-family: sans-serif;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="statusBox">Scan the <b>Hollywood</b> marker first 🎬</div>
 
-    <a-entity camera></a-entity>
-  </a-scene>
+    <a-scene
+      vr-mode-ui="enabled: false"
+      embedded
+      renderer="logarithmicDepthBuffer: true;"
+      arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+    >
+      <!-- Lights -->
+      <a-entity light="type: ambient; intensity: 0.8"></a-entity>
+      <a-entity
+        light="type: directional; intensity: 0.6"
+        position="0 1 1"
+      ></a-entity>
 
-  <script>
-    const statusBox  = document.getElementById('statusBox');
-    const marker     = document.getElementById('marker-priza');
-    const model      = document.getElementById('model-priza');
+      <!-- Hollywood marker -->
+      <a-nft id="marker-hollywood" type="nft" url="priza">
+        <a-entity
+          id="model-hollywood"
+          gltf-model="volodymyr_zelenskyy.glb"
+          scale="50 50 50"
+          position="50 150 0"
+          rotation="-90 0 0"
+          visible="false"
+        ></a-entity>
+      </a-nft>
 
-    // When the priza marker is detected
-    marker.addEventListener('markerFound', () => {
-      model.setAttribute('visible', 'true');
-      statusBox.innerHTML = '✅ Marker scanned! Your 3D character is visible.';
-    });
+      <!-- Reservoir Dogs marker -->
+      <a-nft id="marker-reservoir" type="nft" url="reservoir_dogs">
+        <a-entity
+          id="model-reservoir"
+          gltf-model="reservoir_dogs_glasses_-_sgp26.glb"
+          scale="10 10 10"
+          position="50 150 0"
+          rotation="90 180 0"
+          visible="false"
+        ></a-entity>
+      </a-nft>
 
-    // When the marker is lost
-    marker.addEventListener('markerLost', () => {
-      model.setAttribute('visible', 'false');
-      statusBox.innerHTML = 'Scan the priza marker to see the character ✨';
-    });
-  </script>
-</body>
+      <!-- Pulp Fiction marker -->
+      <a-nft id="marker-pulp" type="nft" url="pulp_fiction">
+        <a-entity
+          id="model-pulp"
+          gltf-model="vincent_vega.glb"
+          scale="50 50 50"
+          position="50 150 0"
+          rotation="90 180 0"
+          visible="false"
+        ></a-entity>
+      </a-nft>
+
+      <!-- Kill Bill (independent) -->
+      <a-nft type="nft" url="kill_bill">
+        <a-entity
+          gltf-model="uma_thurman_kill_bill.glb"
+          scale="0.5 0.5 0.5"
+          position="0 0 0"
+          rotation="90 180 0"
+        ></a-entity>
+      </a-nft>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      const statusBox = document.getElementById("statusBox");
+      const markerHollywood = document.getElementById("marker-hollywood");
+      const markerReservoir = document.getElementById("marker-reservoir");
+      const markerPulp = document.getElementById("marker-pulp");
+
+      const modelHollywood = document.getElementById("model-hollywood");
+      const modelReservoir = document.getElementById("model-reservoir");
+      const modelPulp = document.getElementById("model-pulp");
+
+      let hollywoodScanned = false;
+      let reservoirScanned = false;
+
+      // --- Hollywood marker ---
+      markerHollywood.addEventListener("markerFound", () => {
+        modelHollywood.setAttribute("visible", "true");
+        if (!hollywoodScanned) {
+          hollywoodScanned = true;
+          statusBox.innerHTML = "✅ Tarantino scanned! Now scan the next movie";
+        }
+      });
+      markerHollywood.addEventListener("markerLost", () => {
+        modelHollywood.setAttribute("visible", "false");
+      });
+
+      // --- Reservoir Dogs marker ---
+      markerReservoir.addEventListener("markerFound", () => {
+        if (hollywoodScanned) {
+          modelReservoir.setAttribute("visible", "true");
+          if (!reservoirScanned) {
+            reservoirScanned = true;
+            statusBox.innerHTML =
+              "✅ Reservoir Dogs scanned! Now scan the next movie";
+          }
+        } else {
+          statusBox.innerHTML = "⚠️ You must scan previous movie first!";
+        }
+      });
+      markerReservoir.addEventListener("markerLost", () => {
+        modelReservoir.setAttribute("visible", "false");
+      });
+
+      // --- Pulp Fiction marker ---
+      markerPulp.addEventListener("markerFound", () => {
+        if (hollywoodScanned && reservoirScanned) {
+          modelPulp.setAttribute("visible", "true");
+          statusBox.innerHTML =
+            "🎉 All markers scanned in order! Tarantino universe complete 🍿";
+        } else if (!reservoirScanned) {
+          statusBox.innerHTML =
+            "⚠️ You must scan previous movie before this one";
+        }
+      });
+      markerPulp.addEventListener("markerLost", () => {
+        modelPulp.setAttribute("visible", "false");
+      });
+    </script>
+  </body>
 </html>
