@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Quentin Tarantino AR</title>
+    <title>World Leaders AR</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- A-Frame & AR.js NFT -->
@@ -27,11 +27,12 @@
         border-radius: 8px;
         font-family: sans-serif;
         font-size: 14px;
+        z-index: 5;
       }
     </style>
   </head>
   <body>
-    <div id="statusBox">Scan the <b>Hollywood</b> marker first 🎬</div>
+    <div id="statusBox">Scan the <b>USA</b> flag first 🇺🇸</div>
 
     <a-scene
       vr-mode-ui="enabled: false"
@@ -40,56 +41,49 @@
       arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
     >
       <!-- Lights -->
-      <a-entity light="type: ambient; intensity: 0.8"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.9"></a-entity>
       <a-entity
-        light="type: directional; intensity: 0.6"
+        light="type: directional; intensity: 0.8"
         position="0 1 1"
       ></a-entity>
 
-      <!-- Hollywood marker -->
-      <a-nft id="marker-hollywood" type="nft" url="priza">
+      <!-- USA marker -> Trump -->
+      <a-nft id="marker-usa" type="nft" url="usa">
         <a-entity
-          id="model-hollywood"
-          gltf-model="volodymyr_zelenskyy.glb"
-          scale="50 50 50"
-          position="50 150 0"
-          rotation="-90 0 0"
-          visible="false"
-        ></a-entity>
-      </a-nft>
-
-      <!-- Reservoir Dogs marker -->
-      <a-nft id="marker-reservoir" type="nft" url="reservoir_dogs">
-        <a-entity
-          id="model-reservoir"
-          gltf-model="reservoir_dogs_glasses_-_sgp26.glb"
-          scale="10 10 10"
-          position="50 150 0"
-          rotation="90 180 0"
-          visible="false"
-        ></a-entity>
-      </a-nft>
-
-      <!-- Pulp Fiction marker -->
-      <a-nft id="marker-pulp" type="nft" url="pulp_fiction">
-        <a-entity
-          id="model-pulp"
-          gltf-model="vincent_vega.glb"
-          scale="50 50 50"
-          position="50 150 0"
-          rotation="90 180 0"
-          visible="false"
-        ></a-entity>
-      </a-nft>
-
-      <!-- Kill Bill (independent) -->
-      <a-nft type="nft" url="kill_bill">
-        <a-entity
-          gltf-model="uma_thurman_kill_bill.glb"
-          scale="0.5 0.5 0.5"
+          id="model-usa"
+          gltf-model="trump.glb"
+          scale="1 1 1"
           position="0 0 0"
-          rotation="90 180 0"
-        ></a-entity>
+          rotation="90 0 0"
+          visible="false"
+        >
+        </a-entity>
+      </a-nft>
+
+      <!-- Russia marker -> Putin -->
+      <a-nft id="marker-ru" type="nft" url="ru">
+        <a-entity
+          id="model-ru"
+          gltf-model="putin.glb"
+          scale="1 1 1"
+          position="0 0 0"
+          rotation="90 0 0"
+          visible="false"
+        >
+        </a-entity>
+      </a-nft>
+
+      <!-- Ukraine marker -> Zelensky -->
+      <a-nft id="marker-ua" type="nft" url="ua">
+        <a-entity
+          id="model-ua"
+          gltf-model="zelensky.glb"
+          scale="1 1 1"
+          position="0 0 0"
+          rotation="90 0 0"
+          visible="false"
+        >
+        </a-entity>
       </a-nft>
 
       <a-entity camera></a-entity>
@@ -97,59 +91,72 @@
 
     <script>
       const statusBox = document.getElementById("statusBox");
-      const markerHollywood = document.getElementById("marker-hollywood");
-      const markerReservoir = document.getElementById("marker-reservoir");
-      const markerPulp = document.getElementById("marker-pulp");
 
-      const modelHollywood = document.getElementById("model-hollywood");
-      const modelReservoir = document.getElementById("model-reservoir");
-      const modelPulp = document.getElementById("model-pulp");
+      const markerUSA = document.getElementById("marker-usa");
+      const markerRU = document.getElementById("marker-ru");
+      const markerUA = document.getElementById("marker-ua");
 
-      let hollywoodScanned = false;
-      let reservoirScanned = false;
+      const modelUSA = document.getElementById("model-usa");
+      const modelRU = document.getElementById("model-ru");
+      const modelUA = document.getElementById("model-ua");
 
-      // --- Hollywood marker ---
-      markerHollywood.addEventListener("markerFound", () => {
-        modelHollywood.setAttribute("visible", "true");
-        if (!hollywoodScanned) {
-          hollywoodScanned = true;
-          statusBox.innerHTML = "✅ Tarantino scanned! Now scan the next movie";
+      let usaScanned = false;
+      let ruScanned = false;
+
+      // ---------- USA marker (must be first) ----------
+      markerUSA.addEventListener("markerFound", () => {
+        modelUSA.setAttribute("visible", "true");
+        if (!usaScanned) {
+          usaScanned = true;
+          statusBox.innerHTML = "✅ USA scanned! Now scan the Russia flag 🇷🇺";
         }
       });
-      markerHollywood.addEventListener("markerLost", () => {
-        modelHollywood.setAttribute("visible", "false");
+
+      markerUSA.addEventListener("markerLost", () => {
+        modelUSA.setAttribute("visible", "false");
       });
 
-      // --- Reservoir Dogs marker ---
-      markerReservoir.addEventListener("markerFound", () => {
-        if (hollywoodScanned) {
-          modelReservoir.setAttribute("visible", "true");
-          if (!reservoirScanned) {
-            reservoirScanned = true;
-            statusBox.innerHTML =
-              "✅ Reservoir Dogs scanned! Now scan the next movie";
-          }
-        } else {
-          statusBox.innerHTML = "⚠️ You must scan previous movie first!";
+      // ---------- Russia marker (second) ----------
+      markerRU.addEventListener("markerFound", () => {
+        if (!usaScanned) {
+          // USA not scanned yet
+          modelRU.setAttribute("visible", "false");
+          statusBox.innerHTML = "⚠️ Scan the USA flag first 🇺🇸";
+          return;
         }
-      });
-      markerReservoir.addEventListener("markerLost", () => {
-        modelReservoir.setAttribute("visible", "false");
-      });
 
-      // --- Pulp Fiction marker ---
-      markerPulp.addEventListener("markerFound", () => {
-        if (hollywoodScanned && reservoirScanned) {
-          modelPulp.setAttribute("visible", "true");
+        modelRU.setAttribute("visible", "true");
+        if (!ruScanned) {
+          ruScanned = true;
           statusBox.innerHTML =
-            "🎉 All markers scanned in order! Tarantino universe complete 🍿";
-        } else if (!reservoirScanned) {
-          statusBox.innerHTML =
-            "⚠️ You must scan previous movie before this one";
+            "✅ Russia scanned! Now scan the Ukraine flag 🇺🇦";
         }
       });
-      markerPulp.addEventListener("markerLost", () => {
-        modelPulp.setAttribute("visible", "false");
+
+      markerRU.addEventListener("markerLost", () => {
+        modelRU.setAttribute("visible", "false");
+      });
+
+      // ---------- Ukraine marker (last) ----------
+      markerUA.addEventListener("markerFound", () => {
+        if (!usaScanned) {
+          modelUA.setAttribute("visible", "false");
+          statusBox.innerHTML = "⚠️ Scan the USA flag first 🇺🇸";
+          return;
+        }
+        if (!ruScanned) {
+          modelUA.setAttribute("visible", "false");
+          statusBox.innerHTML =
+            "⚠️ After USA, scan the Russia flag 🇷🇺, then Ukraine 🇺🇦";
+          return;
+        }
+
+        modelUA.setAttribute("visible", "true");
+        statusBox.innerHTML = "🎉 All flags scanned in order! 🇺🇸 → 🇷🇺 → 🇺🇦";
+      });
+
+      markerUA.addEventListener("markerLost", () => {
+        modelUA.setAttribute("visible", "false");
       });
     </script>
   </body>
