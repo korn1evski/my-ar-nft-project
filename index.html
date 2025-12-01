@@ -5,7 +5,7 @@
   <title>My AR Character</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- A-Frame & AR.js NFT (same style as your group project) -->
+  <!-- A-Frame & AR.js NFT (same style as your group's working code) -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.4/aframe/build/aframe-ar-nft.js"></script>
 
@@ -43,9 +43,9 @@
     <a-entity light="type: ambient; intensity: 0.9"></a-entity>
     <a-entity light="type: directional; intensity: 0.8" position="0 1 1"></a-entity>
 
-    <!-- NFT marker: CHANGE 'alp' -> 'priza' if you use priza.* marker files -->
-    <a-nft id="marker-main" type="nft" url="alp">
-      <!-- your 3D character model -->
+    <!-- NFT marker: uses priza.fset / priza.fset3 / priza.iset in project root -->
+    <a-nft id="marker-main" type="nft" url="priza">
+      <!-- 3D character model -->
       <a-entity id="model-main"
                 gltf-model="lowpoly_trump_free_character/scene.gltf"
                 scale="2.5 2.5 2.5"
@@ -59,9 +59,9 @@
   </a-scene>
 
   <script>
-    const statusBox   = document.getElementById('statusBox');
-    const markerMain  = document.getElementById('marker-main');
-    const modelMain   = document.getElementById('model-main');
+    const statusBox  = document.getElementById('statusBox');
+    const markerMain = document.getElementById('marker-main');
+    const modelMain  = document.getElementById('model-main');
 
     // When marker is detected
     markerMain.addEventListener('markerFound', () => {
